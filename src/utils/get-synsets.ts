@@ -1,4 +1,6 @@
 import { Synset, XMLParsedDataItem } from "@/types";
+import fs from "fs";
+import convert from "xml-js";
 
 export function getSynsets(
   parsedDataItems: XMLParsedDataItem[],
@@ -9,10 +11,7 @@ export function getSynsets(
       return result;
     }
 
-    const itemPath = `${parentPath ? `${parentPath} > ` : ""}${
-      parsedDataItem.attributes?.words
-    }`;
-
+    const itemPath = parsedDataItem.attributes?.words ?? "";
     let itemChildren = null;
     if (parsedDataItem.elements) {
       itemChildren = getSynsets(parsedDataItem.elements, itemPath);
@@ -38,3 +37,25 @@ function getSynsetSize(synsetChildren: Synset[] | null) {
       }, 0)
     : 0;
 }
+
+export const getSynsetsFromFile = (() => {
+  let cachedSynsets: Synset[] | undefined = undefined;
+
+  return () => {
+    if (cachedSynsets) {
+      return cachedSynsets;
+    }
+
+    const jsonStr = convert.xml2json(
+      fs.readFileSync("./src/app/api/xml-file/data.xml").toString(),
+      {}
+    );
+    const parsedJsonObj: { elements: XMLParsedDataItem[] } =
+      JSON.parse(jsonStr);
+    //@ts-expect-error improve to automaticaly find first synset
+    const firstSynset = parsedJsonObj.elements[0].elements[1];
+    cachedSynsets = getSynsets([firstSynset], "");
+
+    return cachedSynsets;
+  };
+})();
