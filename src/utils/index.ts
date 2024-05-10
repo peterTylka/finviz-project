@@ -1,1 +1,1 @@
-export * from "./get-synsets";
+export * from "./get-tree-options";
