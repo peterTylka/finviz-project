@@ -1,6 +1,7 @@
 "use client";
-import { Synset, XMLParsedDataItem } from "@/types";
+import { Chart } from "@/components";
 import { Synset, XMLFileResponse } from "@/types";
+import { getTreeOptions } from "@/utils";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -18,7 +19,9 @@ export default function Home() {
     getData();
   }, [finalData]);
 
-  console.log("%c finalData", "background-color: skyblue", { finalData });
-
-  return <div>HOME</div>;
+  return (
+    <div>
+      <Chart data={finalData} getOptions={getTreeOptions} />
+    </div>
+  );
 }
