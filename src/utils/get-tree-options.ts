@@ -1,11 +1,9 @@
+import { DEFAULT_CHART_OPTIONS } from "@/constants";
 import { EChartsOption } from "echarts";
+import { merge } from "lodash";
 
 export function getTreeOptions(data: any[]): EChartsOption {
-  return {
-    tooltip: {
-      trigger: "item",
-      triggerOn: "mousemove",
-    },
+  return merge(DEFAULT_CHART_OPTIONS, {
     series: [
       {
         type: "tree",
@@ -52,5 +50,5 @@ export function getTreeOptions(data: any[]): EChartsOption {
         animationDurationUpdate: 750,
       },
     ],
-  };
+  });
 }

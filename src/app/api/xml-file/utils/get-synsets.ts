@@ -2,6 +2,9 @@ import { Synset, XMLParsedDataItem } from "@/types";
 import fs from "fs";
 import convert from "xml-js";
 
+// chart needs non-zero leaf value
+const DEFAULT_LEAF_VALUE = 1;
+
 export function getSynsets(
   parsedDataItems: XMLParsedDataItem[],
   parentPath: string
@@ -32,10 +35,11 @@ export function getSynsets(
 function getSynsetSize(synsetChildren: Synset[] | null) {
   return synsetChildren
     ? synsetChildren.reduce((sizeResult, child) => {
-        const childSize = child.value === 0 ? 1 : child.value + 1;
+        const isLeaf = child.value === DEFAULT_LEAF_VALUE;
+        const childSize = isLeaf ? 1 : child.value + 1;
         return (sizeResult += childSize);
       }, 0)
-    : 0;
+    : DEFAULT_LEAF_VALUE;
 }
 
 export const getSynsetsFromFile = (() => {
