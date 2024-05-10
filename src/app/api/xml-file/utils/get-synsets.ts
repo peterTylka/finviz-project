@@ -20,7 +20,7 @@ export function getSynsets(
     const synset = {
       ...(itemChildren ? { children: itemChildren } : ({} as Synset)),
       name: itemPath,
-      size: getSynsetSize(itemChildren),
+      value: getSynsetSize(itemChildren),
     };
     result.push(synset);
 
@@ -32,7 +32,7 @@ export function getSynsets(
 function getSynsetSize(synsetChildren: Synset[] | null) {
   return synsetChildren
     ? synsetChildren.reduce((sizeResult, child) => {
-        const childSize = child.size === 0 ? 1 : child.size + 1;
+        const childSize = child.value === 0 ? 1 : child.value + 1;
         return (sizeResult += childSize);
       }, 0)
     : 0;

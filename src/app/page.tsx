@@ -1,7 +1,7 @@
 "use client";
 import { Chart } from "@/components";
 import { Synset, XMLFileResponse } from "@/types";
-import { getTreeOptions } from "@/utils";
+import { getTreeMapOptions } from "@/utils";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -21,7 +21,8 @@ export default function Home() {
 
   return (
     <div>
-      <Chart data={finalData} getOptions={getTreeOptions} />
+      {/* <Chart data={finalData} getOptions={getTreeOptions} /> */}
+      <Chart data={finalData} getOptions={getTreeMapOptions} />
     </div>
   );
 }

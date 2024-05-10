@@ -11,6 +11,6 @@ export interface XMLParsedDataItem {
 
 export interface Synset {
   name: string;
-  size: number;
+  value: number;
   children?: Synset[];
 }
