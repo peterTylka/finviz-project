@@ -1,13 +1,18 @@
 import { EChartsType } from "echarts";
 import { TreeNode } from "echarts/types/src/data/Tree.js";
 
-function getPathToRoot(node: TreeNode): TreeNode[] {
+function getFullPath(node: TreeNode): TreeNode[] {
   const path = [];
+  const startNode = node;
   while (node) {
     node = node.parentNode;
     node && path.push(node);
   }
-  return path.reverse();
+  const finalPathWithTargetNodeWithoutRoot = [
+    ...path.reverse(),
+    startNode,
+  ].slice(1);
+  return finalPathWithTargetNodeWithoutRoot;
 }
 
 function getChartData(chart: EChartsType) {
@@ -29,13 +34,10 @@ export function showChartItem(chart: EChartsType, name: string) {
   const { data, series } = getChartData(chart);
   const targetNode: TreeNode = getTreeNodeByName(data, name);
 
-  const targetNodePathWithoutRoot = [
-    ...getPathToRoot(targetNode),
-    targetNode,
-  ].slice(1);
+  const targetNodePath = getFullPath(targetNode);
 
   const SHOW_DELAY = 1500;
-  targetNodePathWithoutRoot.forEach((pathNode, index) => {
+  targetNodePath.forEach((pathNode, index) => {
     setTimeout(() => {
       chart.dispatchAction({
         type: "treemapRootToNode",
