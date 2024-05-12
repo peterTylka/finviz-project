@@ -1,5 +1,5 @@
 import { Option } from "@/types";
-import { getFullTreeOptions, showChartItem } from "@/utils";
+import { getFullTreeOptions } from "@/utils";
 import { EChartsType } from "echarts";
 import { isEmpty } from "lodash";
 import { useCallback, useEffect, useState } from "react";
@@ -9,9 +9,10 @@ import { Skeleton } from "..";
 
 interface AutocompleteProps {
   chart: EChartsType | null;
+  showItem: (chart: EChartsType, nodeDataIndex: number) => void;
 }
 
-export function Autocomplete({ chart }: AutocompleteProps) {
+export function Autocomplete({ chart, showItem }: AutocompleteProps) {
   const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState([] as Option[]);
 
@@ -26,7 +27,7 @@ export function Autocomplete({ chart }: AutocompleteProps) {
   const onSelectedOption = useCallback(
     (selectedOptions: any[]) => {
       if (chart && !isEmpty(selectedOptions)) {
-        showChartItem(chart, (selectedOptions[0] as Option).value);
+        showItem(chart, (selectedOptions[0] as Option).value);
       }
     },
     [chart]

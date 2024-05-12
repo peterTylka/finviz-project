@@ -1,16 +1,16 @@
 "use client";
 import { Chart } from "@/components";
 import { useSynsets } from "@/hooks";
-import { getTreeMapOptions, showTreemapItem } from "@/utils";
+import { getTreeOptions, showTreeItem } from "@/utils";
 
-export default function TreemapPage() {
+export default function TreePage() {
   const synsets = useSynsets();
 
   return (
     <Chart
       data={synsets}
-      getChartOptions={getTreeMapOptions}
-      showItem={showTreemapItem}
+      getChartOptions={getTreeOptions}
+      showItem={showTreeItem}
     />
   );
 }
