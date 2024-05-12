@@ -5,18 +5,21 @@ import { isEmpty } from "lodash";
 import { useCallback, useEffect, useState } from "react";
 import { Highlighter, Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
+import { Skeleton } from "..";
 
 interface AutocompleteProps {
   chart: EChartsType | null;
 }
 
 export function Autocomplete({ chart }: AutocompleteProps) {
+  const [loading, setLoading] = useState(true);
   const [options, setOptions] = useState([] as Option[]);
 
   useEffect(() => {
     if (chart) {
       // ignore Dataset + root option
       setOptions(getFullTreeOptions(chart).slice(2));
+      setLoading(false);
     }
   }, [chart]);
 
@@ -29,7 +32,11 @@ export function Autocomplete({ chart }: AutocompleteProps) {
     [chart]
   );
 
-  return (
+  return loading ? (
+    <div className="w-full h-10">
+      <Skeleton />
+    </div>
+  ) : (
     <Typeahead
       id="dataset-typeahead"
       className="w-full"
