@@ -1,7 +1,8 @@
+import { Option } from "@/types";
 import { EChartsType } from "echarts";
 import { TreeNode } from "echarts/types/src/data/Tree.js";
 
-function getFullPath(node: TreeNode): TreeNode[] {
+function getNodeFullPath(node: TreeNode): TreeNode[] {
   const path = [];
   const startNode = node;
   while (node) {
@@ -18,23 +19,29 @@ function getFullPath(node: TreeNode): TreeNode[] {
 function getChartData(chart: EChartsType) {
   // @ts-expect-error private method is safe to use
   const series = chart.getModel().getSeries()[0];
-  return {
+  const result = {
     series,
-    data: series?.getAllData()[0].data,
+    tree: series?.getAllData()[0].data?.tree,
   };
+  return result;
 }
 
-function getTreeNodeByName(data: any, name: string): TreeNode {
-  return data.tree.getNodeByDataIndex(
-    data._nameList.findIndex((item) => item === name)
-  );
+export function getFullTreeOptions(chart: EChartsType): Option[] {
+  const { tree } = getChartData(chart);
+  const options: Option[] = tree._nodes.map((node: TreeNode) => {
+    return {
+      name: node.name,
+      value: node.dataIndex,
+    };
+  });
+  return options;
 }
 
-export function showChartItem(chart: EChartsType, name: string) {
-  const { data, series } = getChartData(chart);
-  const targetNode: TreeNode = getTreeNodeByName(data, name);
+export function showChartItem(chart: EChartsType, nodeDataIndex: number) {
+  const { series, tree } = getChartData(chart);
+  const targetNode: TreeNode = tree.getNodeByDataIndex(nodeDataIndex);
 
-  const targetNodePath = getFullPath(targetNode);
+  const targetNodePath = getNodeFullPath(targetNode);
 
   const SHOW_DELAY = 1500;
   targetNodePath.forEach((pathNode, index) => {
@@ -44,6 +51,6 @@ export function showChartItem(chart: EChartsType, name: string) {
         targetNode: pathNode,
         seriesId: series.id,
       });
-    }, (index + 1) * SHOW_DELAY);
+    }, index * SHOW_DELAY);
   });
 }
