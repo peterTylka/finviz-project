@@ -2,8 +2,9 @@ import { Option } from "@/types";
 import { getFullTreeOptions, showChartItem } from "@/utils";
 import { EChartsOption, EChartsType, init } from "echarts";
 import { isEmpty } from "lodash";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Typeahead } from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
 interface ChartProps {
   data: any[] | undefined;
@@ -12,52 +13,54 @@ interface ChartProps {
 
 export function Chart({ data, getOptions }: ChartProps) {
   const chartRef = useRef(null);
-  const chart = useRef<EChartsType | null>(null);
+  const [chart, setChart] = useState<EChartsType | null>(null);
   const [options, setOptions] = useState([] as Option[]);
 
   useEffect(() => {
     if (chartRef.current && data?.length) {
-      chart.current = init(chartRef.current);
-      chart.current.setOption(getOptions(data));
-      if (chart.current != null) {
-        const options = getFullTreeOptions(chart.current);
-        setOptions(options);
-      }
+      const chart = init(chartRef.current);
+      chart.setOption(getOptions(data));
+      const options = getFullTreeOptions(chart);
+      setOptions(options);
+      setChart(chart);
     }
   }, [data]);
 
-  globalThis.chart = chart.current;
+  useEffect(() => {
+    if (!chart) {
+      return;
+    }
+
+    const onResize = () => {
+      chart?.resize();
+    };
+    window.addEventListener("resize", onResize);
+  }, [chart]);
+
+  const onSelectedOption = useCallback(
+    (selectedOptions: any[]) => {
+      if (chart && !isEmpty(selectedOptions)) {
+        showChartItem(chart, (selectedOptions[0] as Option).value);
+      }
+    },
+    [chart]
+  );
+
+  globalThis.chart = chart;
 
   return (
-    // <div style={{ width: "100%", height: "100vh" }}>
-    <>
-      <div style={{ zIndex: 10 }}>
+    <div className="h-screen w-full p-5 flex flex-column justify-center items-center">
+      <div className="flex justify-center">
         <Typeahead
           id="dataset-typeahead"
           labelKey="name"
-          onChange={(selectedOptions) => {
-            console.log("%c chosen", "background-color: skyblue", {
-              option: selectedOptions,
-            });
-            if (!isEmpty(selectedOptions)) {
-              showChartItem(
-                chart.current,
-                (selectedOptions[0] as Option).value
-              );
-            }
-          }}
+          onChange={onSelectedOption}
           options={options}
           placeholder="Choose a name..."
-          // selected={singleSelections}
         />
       </div>
 
-      <div
-        id="chart"
-        ref={chartRef}
-        style={{ width: "100%", height: "90vh" }}
-      />
-    </>
-    // </div>
+      <div id="chart" ref={chartRef} className="w-full grow" />
+    </div>
   );
 }
