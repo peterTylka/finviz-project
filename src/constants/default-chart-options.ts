@@ -8,6 +8,7 @@ export const DEFAULT_CHART_OPTIONS: Partial<EChartsOption> = {
   },
   series: [
     {
+      name: "Dataset",
       label: {
         formatter: (params: CallbackDataParams) => {
           return `${params.name} [${params.value}]`;
