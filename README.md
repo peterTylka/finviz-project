@@ -1,3 +1,14 @@
+## Notes
+
+- project is deployed here - https://finviz-project.vercel.app/
+- I used Apache ECharts Treemap and Tree charts for tree dataset visualization
+  - Treemap works, but if the child has a small size then its label is truncated or not visible at all. Also a leaf node has to have size 1 instead of 0 otherewise it wouldn't be shown.
+  - Tree works for small depth and small number of end nodes. If the number of nodes passes "bearable treshold" result is unreadable
+- selection of name works. It opens names from root until selected name (included). Between openings is 1500 ms delay
+- project could be improved in many ways: mainly with a better data visualization technique, styles, tests, ...
+
+## Default text
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
