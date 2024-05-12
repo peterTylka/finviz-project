@@ -3,7 +3,7 @@ import { getFullTreeOptions, showChartItem } from "@/utils";
 import { EChartsType } from "echarts";
 import { isEmpty } from "lodash";
 import { useCallback, useEffect, useState } from "react";
-import { Typeahead } from "react-bootstrap-typeahead";
+import { Highlighter, Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 
 interface AutocompleteProps {
@@ -15,7 +15,8 @@ export function Autocomplete({ chart }: AutocompleteProps) {
 
   useEffect(() => {
     if (chart) {
-      setOptions(getFullTreeOptions(chart));
+      // ignore Dataset + root option
+      setOptions(getFullTreeOptions(chart).slice(2));
     }
   }, [chart]);
 
@@ -36,6 +37,14 @@ export function Autocomplete({ chart }: AutocompleteProps) {
       onChange={onSelectedOption}
       options={options}
       placeholder="Choose a name..."
+      renderMenuItemChildren={(option, { text }) => (
+        <>
+          <Highlighter search={text}>{(option as Option).name}</Highlighter>,
+          <div>
+            <small>Parent: {(option as Option).parentsPath}</small>
+          </div>
+        </>
+      )}
     />
   );
 }

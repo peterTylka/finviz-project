@@ -29,8 +29,15 @@ function getChartData(chart: EChartsType) {
 export function getFullTreeOptions(chart: EChartsType): Option[] {
   const { tree } = getChartData(chart);
   const options: Option[] = tree._nodes.map((node: TreeNode) => {
+    const fullPath = getNodeFullPath(node);
+    const parentsPathArray = fullPath.length ? fullPath.slice(0, -1) : [];
+    const parentsPath = parentsPathArray
+      .map((subPath) => subPath.name)
+      .join(" > ");
+
     return {
       name: node.name,
+      parentsPath,
       value: node.dataIndex,
     };
   });
