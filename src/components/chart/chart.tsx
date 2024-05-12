@@ -34,7 +34,7 @@ export function Chart({ data, getChartOptions, showItem }: ChartProps) {
   }, [chart]);
 
   return (
-    <div className="h-screen w-full p-5 flex flex-column justify-center items-center">
+    <div className="h-full w-full flex flex-column justify-center items-center">
       <Autocomplete chart={chart} showItem={showItem} />
 
       <div className="w-full grow relative mt-4">
